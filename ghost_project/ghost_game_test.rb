@@ -9,7 +9,7 @@ player2 = Player.new(player2_name)
 
 players = [player1, player2]
 
-game = Game.new(players, "z")
+game = Game.new(players, "")
 
 p game.current_player
 p game.previous_player

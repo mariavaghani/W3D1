@@ -4,24 +4,15 @@ class Game
 
   attr_reader :current_player, :previous_player
 
-  # def self.substrings(string)
-  #   substrings_arr = []
-  #   (0...string.length).each do |idx_start|
-  #     (idx_start...string.length).each do |idx_end|
-  #       substrings_arr << string[idx_start..idx_end]
-  #     end
-  #   end
-  #   substrings_arr.uniq
-  # end
-
   ALPHA = ("a".."z").to_a
   DICTIONARY = {}
   
+
+
   File.open("dictionary.txt") do |fp|
     # debugger
     fp.each do |line|
       word = line.chomp
-      # possible_fragments = Game.substrings(word)
       DICTIONARY[word] = true #possible_fragments
     end
   end
@@ -49,11 +40,47 @@ class Game
   end
 
   def valid_play?(str)
-    str.split("").all? { |letter| ALPHA.include?(letter)} && DICTIONARY.keys.include?(str) && str.include?(@fragment)
+    all_letters = str.split("").all? { |letter| ALPHA.include?(letter)}
+    # p all_letters
+
+    could_make_a_word = DICTIONARY.keys.any? { |key| key.include?(str) }
+    # p could_make_a_word
+
+    addition_to_fragment = str.include?(@fragment) && str != @fragment 
+    # p addition_to_fragment
+
+    all_letters && could_make_a_word && addition_to_fragment 
       
   end
 
   def play_round
+    take_turn(@current_player)
+    if DICTIONARY.keys.any? { |key| key == @fragment }
+      puts "Player #{@previous_player.name} lost. The word is #{@fragment}"
+    else
+      next_player!
+    end
+  end
+
+  def run
     
   end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  
+  player1_name = "Maria"
+  player2_name = "Akshay"
+  player1 = Player.new(player1_name)
+  player2 = Player.new(player2_name)
+
+  players = [player1, player2]
+
+  game = Game.new(players, "")
+
+  p game.valid_play?("zo")
+  game.play_round
+  game.play_round
+  game.play_round
+
 end
